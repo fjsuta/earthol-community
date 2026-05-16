@@ -1,5 +1,5 @@
 
-&lt;div align="center"&gt;
+<div align="center">
 
   [![EarthOL Logo](https://raw.githubusercontent.com/earthol/brand/main/logo-full.svg)](https://github.com/earthol/earthol-community)
 
@@ -20,14 +20,6 @@
 
   ---
 
-  [![Demo](https://img.shields.io/badge/Demo-🌍-blue)](https://demo.earthol.org)
-  [![Website](https://img.shields.io/badge/Website-🌐-green)](https://earthol.org)
-  [![Discord](https://img.shields.io/badge/Discord-💬-purple)](https://discord.gg/earthol)
-  [![Twitter](https://img.shields.io/badge/Twitter-🐦-blue)](https://twitter.com/earthol_official)
-  [![WeChat](https://img.shields.io/badge/WeChat-📱-green)](https://mp.weixin.qq.com/s/xxx)
-
-  ---
-
   **🌍 地球46亿年开服，人类无官方主线任务**
   **🌏 所有人生剧本，全靠玩家主动探索**
   **🌎 100%开源，无阉割，无闭源模块**
@@ -36,7 +28,7 @@
 
   [Features](#features) | [Quick Start](#quick-start) | [Documentation](#documentation) | [Contribute](#contribute) | [Join Us](#join-us)
 
-&lt;/div&gt;
+</div>
 
 ---
 
@@ -149,7 +141,7 @@ We welcome contributions from everyone! Please read our [Contributing Guide](./C
 
 ### 🌟 Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=earthol/earthol-community&amp;type=Date)](https://star-history.com/#earthol/earthol-community&amp;Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=earthol/earthol-community&type=Date)](https://star-history.com/#earthol/earthol-community&Date)
 
 ---
 
@@ -262,17 +254,15 @@ npm run dev
 
 ### 🌟 Star历史
 
-[![Star History Chart](https://api.star-history.com/svg?repos=earthol/earthol-community&amp;type=Date)](https://star-history.com/#earthol/earthol-community&amp;Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=earthol/earthol-community&type=Date)](https://star-history.com/#earthol/earthol-community&Date)
 
 ---
 
 ## 🌍 Join Us / 加入我们
 
-- 🌐 [官网](https://earthol.org)
-- 📖 [博客](https://blog.earthol.org)
-- 💬 [Discord](https://discord.gg/earthol)
-- 🐦 [Twitter](https://twitter.com/earthol_official)
-- 📱 [微信公众号](https://mp.weixin.qq.com/s/xxx)
+- 📧 [邮箱](mailto:replab@zohomail.cn)
+- 📱 [微博](https://weibo.com/u/7799762062)
+- 💬 [QQ频道](https://pd.qq.com/s/6giv7fcac?b=9)
 
 ## 📄 License / 许可证
 
@@ -280,10 +270,10 @@ MIT License - See [LICENSE](LICENSE) for details.
 
 ---
 
-&lt;div align="center"&gt;
+<div align="center">
 
 **Made with ❤️ by the EarthOL community worldwide**
 
 [⬆️ Back to top](#)
 
-&lt;/div&gt;
+</div>
