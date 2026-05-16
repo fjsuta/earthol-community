@@ -22,7 +22,6 @@
 
   **🌍 地球46亿年开服，人类无官方主线任务**
   **🌏 所有人生剧本，全靠玩家主动探索**
-  **🌎 100%开源，无阉割，无闭源模块**
 
   [![EarthOL Preview](https://raw.githubusercontent.com/earthol/brand/main/preview.jpg)](https://demo.earthol.org)
 

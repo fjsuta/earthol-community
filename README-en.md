@@ -22,7 +22,6 @@
 
   **🌍 Earth has been live for 4.6 billion years - No official main quest**
   **🌏 All life stories and knowledge are discovered and shared by players**
-  **🌎 100% open source, no restrictions, no closed-source modules**
 
   [![EarthOL Preview](https://raw.githubusercontent.com/earthol/brand/main/preview.jpg)](https://demo.earthol.org)
 
