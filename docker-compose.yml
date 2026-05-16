@@ -1,0 +1,72 @@
+
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: earthol-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root123456
+      MYSQL_DATABASE: earthol
+      MYSQL_USER: earthol
+      MYSQL_PASSWORD: earthol123
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - earthol-network
+
+  redis:
+    image: redis:7.0-alpine
+    container_name: earthol-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - earthol-network
+
+  server:
+    build:
+      context: ./server
+    container_name: earthol-server
+    environment:
+      PORT: 3001
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: earthol
+      DB_USER: earthol
+      DB_PASSWORD: earthol123
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      AI_PROVIDER: ollama
+      OLLAMA_URL: http://host.docker.internal:11434
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - earthol-network
+    restart: unless-stopped
+
+  client:
+    build:
+      context: ./client
+    container_name: earthol-client
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+    networks:
+      - earthol-network
+
+volumes:
+  mysql-data:
+  redis-data:
+
+networks:
+  earthol-network:
+    driver: bridge
