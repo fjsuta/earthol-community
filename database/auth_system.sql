@@ -116,6 +116,45 @@ CREATE TABLE IF NOT EXISTS admin_operation_logs (
   INDEX idx_created_at (created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='管理员操作日志表';
 
+-- 9. 用户身份信息表
+CREATE TABLE IF NOT EXISTS user_identity (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id INT NOT NULL UNIQUE COMMENT '用户ID',
+  id_card VARCHAR(500) COMMENT '加密后的身份证号',
+  real_name VARCHAR(100) COMMENT '真实姓名',
+  gender ENUM('male', 'female') COMMENT '性别',
+  birthday DATE COMMENT '生日',
+  region VARCHAR(255) COMMENT '地区',
+  is_verified BOOLEAN DEFAULT FALSE COMMENT '是否已验证',
+  verified_at TIMESTAMP NULL COMMENT '验证时间',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_user_id (user_id),
+  INDEX idx_is_verified (is_verified)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户身份信息表';
+
+-- 10. 身份验证配置表
+CREATE TABLE IF NOT EXISTS identity_verification_logs (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id INT COMMENT '用户ID',
+  verification_type ENUM('basic_algorithm', 'official_plugin') NOT NULL COMMENT '验证类型',
+  status ENUM('success', 'failed') NOT NULL COMMENT '验证结果',
+  error_message VARCHAR(255) COMMENT '错误信息',
+  ip_address VARCHAR(50) COMMENT 'IP地址',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_user_id (user_id),
+  INDEX idx_created_at (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='身份验证日志表';
+
+-- ========================================
+-- 插入默认系统配置
+-- ========================================
+-- 插入身份验证配置
+INSERT INTO system_configs (config_key, config_value, config_type, description, category, is_public) VALUES
+('identity_validation_mode', '"optional"', 'string', '身份验证模式: disabled/optional/required/official', 'identity', TRUE),
+('identity_enabled', '"optional', 'identity', TRUE),
+('email_verification_required', '"false"', 'boolean', '是否需要邮箱验证', 'general', TRUE);
+
 -- ========================================
 -- 插入默认管理员角色
 -- ========================================

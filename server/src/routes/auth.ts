@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import pool from '../config/database';
 import emailService from '../services/emailService';
 import oauthService from '../services/oauthService';
+import identityService from '../services/identity/IdentityService';
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'earthol-secret-key-2024';
@@ -39,7 +40,7 @@ router.post('/send-code', async (req, res) => {
 // 注册
 router.post('/register', async (req, res) => {
   try {
-    const { username, email, password, code, regionId, regionName } = req.body;
+    const { username, email, password, code, regionId, regionName, idCard, realName } = req.body;
 
     // 参数验证
     if (!username || !email || !password) {
@@ -95,17 +96,49 @@ router.post('/register', async (req, res) => {
       });
     }
 
+    // 验证身份认证（如果启用）
+    let identityData: any = null;
+    if (idCard) {
+      const identityResult = await identityService.validateIdentity(idCard, realName);
+      if (!identityResult.isValid) {
+        return res.status(400).json({ 
+          success: false, 
+          message: identityResult.message 
+        });
+      }
+      identityData = identityResult.data;
+    }
+
     // 加密密码
     const passwordHash = await bcrypt.hash(password, 10);
 
     // 创建用户
     const [result] = await pool.execute(
-      `INSERT INTO users (username, email, password_hash, region_id, region_name, role, level, is_email_verified) 
-       VALUES (?, ?, ?, ?, ?, 'newbie', 1, ?)`,
-      [username, email, passwordHash, regionId || null, regionName || '萌新试炼区', requireEmailVerify]
+      `INSERT INTO users (
+        username, email, password_hash, region_id, region_name, role, level, is_email_verified
+      ) VALUES (?, ?, ?, ?, ?, 'newbie', 1, ?)`,
+      [username, email, passwordHash, regionId || null, regionName || '萌新试炼区', requireEmailVerify || false]
     );
 
     const userId = (result as any).insertId;
+
+    // 如果有身份证信息，加密存储
+    if (idCard && identityData) {
+      const encryptedIdCard = identityService.encryptIdCard(idCard);
+      await pool.execute(
+        `INSERT INTO user_identity (
+          user_id, id_card, real_name, gender, birthday, region, is_verified, verified_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())`,
+        [userId, encryptedIdCard, realName, identityData.gender, identityData.birthday, identityData.region, true]
+      );
+
+      // 记录验证日志
+      await pool.execute(
+        `INSERT INTO identity_verification_logs (user_id, verification_type, status, ip_address) 
+         VALUES (?, 'basic_algorithm', 'success', ?)`,
+        [userId, req.ip]
+      );
+    }
 
     // 创建用户积分记录
     await pool.execute(
@@ -133,7 +166,8 @@ router.post('/register', async (req, res) => {
           role: 'newbie',
           level: 1,
           regionId,
-          regionName: regionName || '萌新试炼区'
+          regionName: regionName || '萌新试炼区',
+          identityVerified: !!identityData
         }
       }
     });
@@ -505,6 +539,12 @@ router.get('/me', async (req, res) => {
     // 获取OAuth绑定
     const oauthBindings = await oauthService.getUserBindings(user.id);
 
+    // 获取身份验证信息（脱敏）
+    const [identity] = await pool.execute(
+      'SELECT real_name, gender, birthday, region, is_verified FROM user_identity WHERE user_id = ?',
+      [user.id]
+    );
+
     res.json({
       success: true,
       data: {
@@ -531,7 +571,8 @@ router.get('/me', async (req, res) => {
           isEmailVerified: user.is_email_verified,
           createdAt: user.created_at,
           scores: (scores as any[])[0] || null,
-          oauthBindings
+          oauthBindings,
+          identity: (identity as any[])[0] || null
         }
       }
     });
