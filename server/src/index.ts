@@ -42,7 +42,8 @@ app.use('/api/social', socialRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/config', configRoutes);
-app.use('/api', regionsRoutes); // 区域路由
+app.use('/api', regionsRoutes);
+app.use('/api/features', regionsRoutes); // 区域路由
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

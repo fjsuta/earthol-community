@@ -20,7 +20,7 @@
           >
             <el-menu-item index="/">全球数据</el-menu-item>
             <el-menu-item index="/forum">论坛</el-menu-item>
-            <el-menu-item index="/chat">AI对话</el-menu-item>
+            <el-menu-item v-if="features.ai_enabled" index="/chat">AI对话</el-menu-item>
             <el-menu-item index="/chatroom">聊天室</el-menu-item>
           </el-menu>
 
@@ -179,6 +179,17 @@ async function loadICPConfig() {
     }
   } catch (error) {
     console.error('Failed to load ICP config:', error);
+  }
+}
+
+async function loadFeatures() {
+  try {
+    const res = await regionsApi.checkAIFeature();
+    if (res.data.success) {
+      features.value.ai_enabled = res.data.data.enabled;
+    }
+  } catch (error) {
+    console.error('Failed to load features:', error);
   }
 }
 

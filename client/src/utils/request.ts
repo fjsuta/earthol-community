@@ -116,7 +116,10 @@ export const regionsApi = {
   getCurrent: () => api.get('/regions/current'),
   
   // 健康检查
-  ping: () => api.get('/ping')
+  ping: () => api.get('/ping'),
+  
+  // 检查AI功能是否启用
+  checkAIFeature: () => api.get('/features/ai')
 };
 
 // 导出所有 API
