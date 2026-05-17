@@ -62,6 +62,8 @@
 
       <el-footer v-if="icpConfig.show_footer !== false" class="app-footer">
         <div class="footer-content">
+          <RegionSwitcher class="footer-region-switcher" />
+          
           <div class="footer-links">
             <a @click="$router.push('/about')">关于我们</a>
             <span class="divider">|</span>
@@ -69,6 +71,7 @@
             <span class="divider">|</span>
             <a @click="$router.push('/privacy')">隐私政策</a>
           </div>
+          
           <div v-if="icpConfig.icp_number || icpConfig.icp_police_number" class="icp-links">
             <a 
               v-if="icpConfig.icp_number" 
@@ -88,6 +91,7 @@
               {{ icpConfig.icp_police_number }}
             </a>
           </div>
+          
           <p class="copyright">
             {{ icpConfig.copyright_text || '© 2024 地球OL全球玩家社区' }}
           </p>
@@ -103,6 +107,8 @@ import { useRoute } from 'vue-router';
 import { Search, Bell, User, Setting, SwitchButton } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import { userApi, configApi } from './api';
+import RegionSwitcher from './components/RegionSwitcher.vue';
+import { initRegion } from './utils/request';
 
 const route = useRoute();
 const unreadCount = ref(0);
@@ -177,6 +183,9 @@ async function loadICPConfig() {
 }
 
 onMounted(() => {
+  // 初始化多区域功能
+  initRegion();
+  
   loadUnreadCount();
   loadICPConfig();
   
@@ -309,6 +318,11 @@ onMounted(() => {
   max-width: 1400px;
   margin: 0 auto;
   text-align: center;
+}
+
+.footer-region-switcher {
+  margin-bottom: 16px;
+  display: inline-block;
 }
 
 .footer-links {

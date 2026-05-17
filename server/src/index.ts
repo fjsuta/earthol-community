@@ -13,6 +13,7 @@ import socialRoutes from './routes/social';
 import adminRoutes from './routes/admin';
 import userRoutes from './routes/user';
 import configRoutes from './routes/config';
+import regionsRoutes from './routes/regions';
 import { populationService } from './services/populationService';
 import { sensitiveWordMiddleware } from './middleware/contentFilter';
 import redisClient from './config/redis';
@@ -41,6 +42,7 @@ app.use('/api/social', socialRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/config', configRoutes);
+app.use('/api', regionsRoutes); // 区域路由
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
@@ -114,7 +116,8 @@ async function startServer() {
       console.log('      ├─ /api/social - 社交功能');
       console.log('      ├─ /api/admin  - 管理后台');
       console.log('      ├─ /api/user   - 用户中心');
-      console.log('      └─ /api/config - 配置管理');
+      console.log('      ├─ /api/config - 配置管理');
+      console.log('      └─ /api/regions - 多区域管理');
       console.log('🌍 ═══════════════════════════════════════════');
       console.log('');
     });

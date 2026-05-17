@@ -1,9 +1,5 @@
 import axios from 'axios';
-
-const api = axios.create({
-  baseURL: 'http://localhost:3001/api',
-  timeout: 10000
-});
+import { api } from './request';
 
 export const earthApi = {
   getData: () => api.get('/earth/data'),
@@ -40,7 +36,18 @@ export const authApi = {
   updateProfile: (data: any) => api.put('/auth/profile', data),
   changePassword: (data: any) => api.put('/auth/password', data),
   getRegions: () => api.get('/auth/regions'),
-  getUser: (id: number) => api.get(`/auth/user/${id}`)
+  getUser: (id: number) => api.get(`/auth/user/${id}`),
+  // 验证码
+  sendCode: (data: any) => api.post('/auth/send-code', data),
+  // 忘记密码
+  forgotPassword: (data: any) => api.post('/auth/forgot-password', data),
+  resetPassword: (data: any) => api.post('/auth/reset-password', data),
+  // OAuth
+  getOAuthUrl: (provider: string) => api.get(`/auth/oauth/${provider}/url`),
+  oAuthLogin: (provider: string, data: any) => api.post(`/auth/oauth/${provider}`, data),
+  // 可用性检查
+  checkEmail: (email: string) => api.get('/auth/check-email', { params: { email } }),
+  checkUsername: (username: string) => api.get('/auth/check-username', { params: { username } })
 };
 
 export const socialApi = {
@@ -130,5 +137,3 @@ export const adminApi = {
   addSensitiveWord: (data: any) => api.post('/admin/sensitive-words', data),
   deleteSensitiveWord: (id: number) => api.delete(`/admin/sensitive-words/${id}`)
 };
-
-export default api;
