@@ -133,6 +133,31 @@ router.put('/users/:id/status', async (req, res) => {
   }
 });
 
+// 删除用户
+router.delete('/users/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // 获取用户信息（用于日志）
+    const [userRows] = await pool.execute('SELECT username FROM users WHERE id = ?', [id]);
+    const username = (userRows as any[])[0]?.username || '未知用户';
+
+    // 软删除用户（保留数据但标记为已删除）
+    await pool.execute('UPDATE users SET status = "deleted", deleted_at = NOW() WHERE id = ?', [id]);
+
+    // 记录操作日志
+    await pool.execute(
+      'INSERT INTO operation_logs (action, target_type, target_id, target_name) VALUES (?, ?, ?, ?)',
+      ['delete_user', 'user', id, username]
+    );
+
+    res.json({ success: true, message: '用户已删除' });
+  } catch (error) {
+    console.error('Delete user error:', error);
+    res.status(500).json({ success: false, message: '删除用户失败' });
+  }
+});
+
 // ========================================
 // 板块管理
 // ========================================

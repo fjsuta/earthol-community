@@ -78,4 +78,57 @@ export const userApi = {
   createCollectionFolder: (data: any) => api.post('/forum/collection-folders', data)
 };
 
+export const configApi = {
+  getSystemInfo: () => api.get('/config/system/info'),
+  
+  getSystemConfigs: (category?: string) => api.get('/config/configs/system', { params: { category } }),
+  setSystemConfig: (data: any) => api.post('/config/configs/system', data),
+  
+  getAIConfigs: () => api.get('/config/configs/ai'),
+  createAIConfig: (data: any) => api.post('/config/configs/ai', data),
+  updateAIConfig: (id: number, data: any) => api.put(`/config/configs/ai/${id}`, data),
+  deleteAIConfig: (id: number) => api.delete(`/config/configs/ai/${id}`),
+  testAIConfig: (id: number) => api.post(`/config/configs/ai/${id}/test`),
+  
+  getStorageConfigs: () => api.get('/config/configs/storage'),
+  createStorageConfig: (data: any) => api.post('/config/configs/storage', data),
+  updateStorageConfig: (id: number, data: any) => api.put(`/config/configs/storage/${id}`),
+  deleteStorageConfig: (id: number) => api.delete(`/config/configs/storage/${id}`),
+  testStorageConfig: (id: number) => api.post(`/config/configs/storage/${id}/test`),
+  
+  getDatabaseConfigs: () => api.get('/config/configs/database'),
+  createDatabaseConfig: (data: any) => api.post('/config/configs/database', data),
+  updateDatabaseConfig: (id: number, data: any) => api.put(`/config/configs/database/${id}`),
+  deleteDatabaseConfig: (id: number) => api.delete(`/config/configs/database/${id}`),
+  testDatabaseConfig: (id: number) => api.post(`/config/configs/database/${id}/test`),
+
+  getICPConfigs: () => api.get('/config/configs/icp'),
+  updateICPConfigs: (data: any) => api.post('/config/configs/icp', data),
+
+  getPublicConfigs: () => api.get('/config/public/config')
+};
+
+export const adminApi = {
+  getUsers: (params?: any) => api.get('/admin/users', { params }),
+  updateUserRole: (id: number, role: string) => api.put(`/admin/users/${id}/role`, { role }),
+  updateUserStatus: (id: number, status: string) => api.put(`/admin/users/${id}/status`, { status }),
+  deleteUser: (id: number) => api.delete(`/admin/users/${id}`),
+  getCategories: () => api.get('/admin/categories'),
+  createCategory: (data: any) => api.post('/admin/categories', data),
+  updateCategory: (id: number, data: any) => api.put(`/admin/categories/${id}`, data),
+  getPendingPosts: () => api.get('/admin/posts/pending'),
+  reviewPost: (id: number, status: string, note?: string) => api.put(`/admin/posts/${id}/review`, { status, note }),
+  pinPost: (id: number, isPinned: boolean) => api.put(`/admin/posts/${id}/pin`, { isPinned }),
+  essencePost: (id: number, isEssence: boolean) => api.put(`/admin/posts/${id}/essence`, { isEssence }),
+  deletePost: (id: number) => api.delete(`/admin/posts/${id}`),
+  getStats: () => api.get('/admin/stats'),
+  getAnnouncements: (status?: string) => api.get('/admin/announcements', { params: { status } }),
+  createAnnouncement: (data: any) => api.post('/admin/announcements', data),
+  deleteAnnouncement: (id: number) => api.delete(`/admin/announcements/${id}`),
+  getLogs: (params?: any) => api.get('/admin/logs', { params }),
+  getSensitiveWords: () => api.get('/admin/sensitive-words'),
+  addSensitiveWord: (data: any) => api.post('/admin/sensitive-words', data),
+  deleteSensitiveWord: (id: number) => api.delete(`/admin/sensitive-words/${id}`)
+};
+
 export default api;

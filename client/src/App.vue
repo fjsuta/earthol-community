@@ -60,7 +60,7 @@
         <router-view />
       </el-main>
 
-      <el-footer class="app-footer">
+      <el-footer v-if="icpConfig.show_footer !== false" class="app-footer">
         <div class="footer-content">
           <div class="footer-links">
             <a @click="$router.push('/about')">关于我们</a>
@@ -69,8 +69,28 @@
             <span class="divider">|</span>
             <a @click="$router.push('/privacy')">隐私政策</a>
           </div>
-          <p class="copyright">© 2024 EarthOL - 全球玩家社区 | MIT开源协议</p>
-          <p class="opensource">🌍 100%开源 · 无阉割 · 无闭源模块</p>
+          <div v-if="icpConfig.icp_number || icpConfig.icp_police_number" class="icp-links">
+            <a 
+              v-if="icpConfig.icp_number" 
+              :href="icpConfig.icp_url || '#'" 
+              target="_blank" 
+              class="icp-link"
+            >
+              {{ icpConfig.icp_number }}
+            </a>
+            <span v-if="icpConfig.icp_number && icpConfig.icp_police_number" class="divider">|</span>
+            <a 
+              v-if="icpConfig.icp_police_number" 
+              :href="icpConfig.icp_police_url || '#'" 
+              target="_blank" 
+              class="icp-link"
+            >
+              {{ icpConfig.icp_police_number }}
+            </a>
+          </div>
+          <p class="copyright">
+            {{ icpConfig.copyright_text || '© 2024 地球OL全球玩家社区' }}
+          </p>
         </div>
       </el-footer>
     </el-container>
@@ -82,10 +102,19 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { Search, Bell, User, Setting, SwitchButton } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
-import { userApi } from './api';
+import { userApi, configApi } from './api';
 
 const route = useRoute();
 const unreadCount = ref(0);
+
+const icpConfig = ref({
+  icp_number: '',
+  icp_url: '',
+  icp_police_number: '',
+  icp_police_url: '',
+  copyright_text: '',
+  show_footer: true
+});
 
 const activeMenu = computed(() => route.path);
 
@@ -128,8 +157,28 @@ async function loadUnreadCount() {
   }
 }
 
+async function loadICPConfig() {
+  try {
+    const res = await configApi.getPublicConfigs();
+    if (res.data.success) {
+      const data = res.data.data;
+      icpConfig.value = {
+        icp_number: data.icp_number ? JSON.parse(data.icp_number) : '',
+        icp_url: data.icp_url ? JSON.parse(data.icp_url) : '',
+        icp_police_number: data.icp_police_number ? JSON.parse(data.icp_police_number) : '',
+        icp_police_url: data.icp_police_url ? JSON.parse(data.icp_police_url) : '',
+        copyright_text: data.copyright_text ? JSON.parse(data.copyright_text) : '',
+        show_footer: data.show_footer !== undefined ? JSON.parse(data.show_footer) : true
+      };
+    }
+  } catch (error) {
+    console.error('Failed to load ICP config:', error);
+  }
+}
+
 onMounted(() => {
   loadUnreadCount();
+  loadICPConfig();
   
   setInterval(() => {
     loadUnreadCount();
@@ -277,6 +326,20 @@ onMounted(() => {
   color: var(--primary-color);
 }
 
+.icp-links {
+  margin-bottom: 12px;
+}
+
+.icp-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.icp-link:hover {
+  color: var(--primary-color);
+}
+
 .divider {
   margin: 0 12px;
   color: var(--text-secondary);
@@ -286,11 +349,6 @@ onMounted(() => {
   color: var(--text-secondary);
   font-size: 13px;
   margin-bottom: 8px;
-}
-
-.opensource {
-  color: var(--primary-color);
-  font-size: 13px;
 }
 
 @media (max-width: 768px) {

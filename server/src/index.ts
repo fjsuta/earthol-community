@@ -12,6 +12,7 @@ import authRoutes from './routes/auth';
 import socialRoutes from './routes/social';
 import adminRoutes from './routes/admin';
 import userRoutes from './routes/user';
+import configRoutes from './routes/config';
 import { populationService } from './services/populationService';
 import { sensitiveWordMiddleware } from './middleware/contentFilter';
 import redisClient from './config/redis';
@@ -39,6 +40,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/social', socialRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/config', configRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
@@ -111,7 +113,8 @@ async function startServer() {
       console.log('      ├─ /api/auth   - 用户认证');
       console.log('      ├─ /api/social - 社交功能');
       console.log('      ├─ /api/admin  - 管理后台');
-      console.log('      └─ /api/user   - 用户中心');
+      console.log('      ├─ /api/user   - 用户中心');
+      console.log('      └─ /api/config - 配置管理');
       console.log('🌍 ═══════════════════════════════════════════');
       console.log('');
     });
